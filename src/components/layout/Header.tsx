@@ -46,6 +46,11 @@ const Header = () => {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
+          <Link to="/login">
+            <Button variant="ghost" size="sm">
+              Login
+            </Button>
+          </Link>
           <Link to="/dealer/signup">
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
@@ -93,6 +98,11 @@ const Header = () => {
                 </Link>
               ))}
               <hr className="my-2 border-border" />
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start">
+                  Login
+                </Button>
+              </Link>
               <Link to="/dealer/signup" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" className="w-full">
                   <User className="h-4 w-4" />
