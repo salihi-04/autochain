@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { Car, formatPrice, getDealerById } from '@/lib/mockData';
 import { Badge } from '@/components/ui/badge';
 import HealthBadge from './HealthBadge';
-import { MapPin, CheckCircle2 } from 'lucide-react';
+import VerificationBadge from '@/components/dealers/VerificationBadge';
+import { MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface CarCardProps {
@@ -17,65 +18,61 @@ const CarCard = ({ car, index = 0 }: CarCardProps) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.3 }}
+      transition={{ delay: index * 0.05, duration: 0.3 }}
     >
       <Link to={`/cars/${car.id}`}>
-        <article className="group bg-card rounded-xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+        <article className="group bg-card rounded-xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 active:scale-[0.98]">
           {/* Image */}
-          <div className="relative aspect-[16/10] overflow-hidden">
+          <div className="relative aspect-[4/3] sm:aspect-[16/10] overflow-hidden">
             <img 
-              src={car.images[0]} 
+              src={car.images.front} 
               alt={`${car.make} ${car.model}`}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
             />
-            <div className="absolute top-3 left-3 flex gap-2">
+            <div className="absolute top-2 left-2 flex gap-1.5">
               {car.status === 'available' && (
-                <Badge variant="default" className="bg-success text-success-foreground">
+                <Badge variant="default" className="bg-success text-success-foreground text-xs">
                   Available
                 </Badge>
               )}
               {car.status === 'negotiating' && (
-                <Badge variant="default" className="bg-warning text-warning-foreground">
-                  In Negotiation
+                <Badge variant="default" className="bg-warning text-warning-foreground text-xs">
+                  In Talks
                 </Badge>
               )}
+            </div>
+            <div className="absolute bottom-2 right-2">
+              <HealthBadge percent={car.healthPercent} size="sm" />
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-4 space-y-3">
+          <div className="p-3 sm:p-4 space-y-2">
             {/* Title & Year */}
             <div>
-              <h3 className="font-bold text-lg text-card-foreground group-hover:text-accent transition-colors">
-                {car.make} {car.model}
+              <h3 className="font-bold text-base sm:text-lg text-card-foreground group-hover:text-accent transition-colors line-clamp-1">
+                {car.year} {car.make} {car.model}
               </h3>
-              <p className="text-sm text-muted-foreground">{car.year}</p>
             </div>
 
             {/* Price */}
-            <p className="text-xl font-bold text-accent">
+            <p className="text-lg sm:text-xl font-bold text-accent">
               {formatPrice(car.price, car.priceType)}
             </p>
 
-            {/* Health */}
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Health</span>
-              <HealthBadge percent={car.healthPercent} size="sm" />
-            </div>
-
             {/* Dealer */}
             {originDealer && (
-              <div className="pt-3 border-t border-border flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5" />
-                  <span>{originDealer.location}</span>
+              <div className="pt-2 border-t border-border flex items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 text-xs sm:text-sm text-muted-foreground min-w-0">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate">{originDealer.location}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-sm">
-                  <span className="font-medium text-card-foreground">{originDealer.businessName}</span>
-                  {originDealer.isVerified && (
-                    <CheckCircle2 className="h-4 w-4 text-success" />
-                  )}
-                </div>
+                <VerificationBadge 
+                  tier={originDealer.verificationTier} 
+                  size="sm" 
+                  showLabel={false} 
+                />
               </div>
             )}
           </div>

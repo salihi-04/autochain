@@ -4,6 +4,7 @@ import CarCard from '@/components/cars/CarCard';
 import SearchFilters, { FilterState } from '@/components/cars/SearchFilters';
 import { cars, getDealerById } from '@/lib/mockData';
 import { motion } from 'framer-motion';
+import { Car, Search } from 'lucide-react';
 
 const CarFeed = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,7 +37,7 @@ const CarFeed = () => {
       // Verified dealer filter
       if (filters.verifiedOnly) {
         const dealer = getDealerById(car.originDealerId);
-        if (!dealer?.isVerified) return false;
+        if (!dealer || dealer.verificationTier === 'unverified') return false;
       }
 
       // Location filter
@@ -51,34 +52,34 @@ const CarFeed = () => {
 
   return (
     <Layout>
-      {/* Page Header */}
-      <section className="bg-primary py-12">
+      {/* Page Header - Mobile optimized */}
+      <section className="bg-primary py-6 sm:py-10">
         <div className="container">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-center text-primary-foreground"
           >
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">Browse Cars</h1>
-            <p className="text-primary-foreground/70">
-              {filteredCars.length} cars available from verified dealers
+            <h1 className="text-2xl sm:text-3xl font-bold mb-1">Browse Cars</h1>
+            <p className="text-sm sm:text-base text-primary-foreground/70">
+              {filteredCars.length} cars available
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Search & Filters */}
-      <section className="container -mt-6 mb-8">
+      <section className="container -mt-4 mb-6">
         <SearchFilters 
           onSearch={setSearchQuery}
           onFilterChange={setFilters}
         />
       </section>
 
-      {/* Car Grid */}
+      {/* Car Grid - Mobile first */}
       <section className="container pb-20">
         {filteredCars.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {filteredCars.map((car, index) => (
               <CarCard key={car.id} car={car} index={index} />
             ))}
@@ -87,10 +88,13 @@ const CarFeed = () => {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="text-center py-20"
+            className="text-center py-16"
           >
-            <p className="text-xl text-muted-foreground mb-4">No cars found matching your criteria</p>
-            <p className="text-sm text-muted-foreground">Try adjusting your filters or search terms</p>
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
+              <Search className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-lg text-foreground font-medium mb-1">No cars found</p>
+            <p className="text-sm text-muted-foreground">Try adjusting your filters</p>
           </motion.div>
         )}
       </section>
