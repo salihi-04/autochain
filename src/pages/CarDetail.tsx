@@ -164,7 +164,14 @@ const CarDetail = () => {
                 transition={{ delay: 0.2 }}
                 className="bg-card rounded-xl p-4 sm:p-6 shadow-card"
               >
-                <h2 className="text-lg font-bold text-card-foreground mb-4">Dealers Selling This</h2>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-bold text-card-foreground">Dealers Selling This</h2>
+                  <Link to={`/cars/${car.id}/affiliates`}>
+                    <Button variant="ghost" size="sm" className="text-accent">
+                      View All
+                    </Button>
+                  </Link>
+                </div>
                 
                 {/* Origin Dealer */}
                 {originDealer && (
@@ -198,7 +205,7 @@ const CarDetail = () => {
                 {affiliateDealers.length > 0 && (
                   <div className="space-y-2">
                     <p className="text-xs text-muted-foreground">Also available through</p>
-                    {affiliateDealers.map(dealer => (
+                    {affiliateDealers.slice(0, 2).map(dealer => (
                       <Link key={dealer.id} to={`/dealers/${dealer.id}`}>
                         <div className="flex items-center justify-between p-3 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors">
                           <div className="flex items-center gap-3">
@@ -218,75 +225,22 @@ const CarDetail = () => {
                         </div>
                       </Link>
                     ))}
-                  </div>
-                )}
-              </motion.div>
-            </div>
-
-            {/* Sidebar - Desktop Only */}
-            <div className="hidden lg:block space-y-4">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="bg-card rounded-xl p-6 shadow-card sticky top-24"
-              >
-                <h3 className="font-bold text-card-foreground mb-4">Contact Dealer</h3>
-                
-                {originDealer && (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-xl font-bold text-primary">
-                          {originDealer.businessName.charAt(0)}
-                        </span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-card-foreground">{originDealer.businessName}</p>
-                        <VerificationBadge tier={originDealer.verificationTier} size="sm" />
-                      </div>
-                    </div>
-
-                    <Button 
-                      variant="accent" 
-                      className="w-full"
-                      onClick={() => openWhatsApp(originDealer.whatsappNumber)}
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      WhatsApp
-                    </Button>
-
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => handleCall(originDealer.phoneNumber)}
-                    >
-                      <Phone className="h-4 w-4" />
-                      Call Now
-                    </Button>
-
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" className="flex-1">
-                        <Share2 className="h-4 w-4" />
-                        Share
-                      </Button>
-                      <Button variant="ghost" size="sm" className="flex-1">
-                        <Flag className="h-4 w-4" />
-                        Report
-                      </Button>
-                    </div>
+                    {affiliateDealers.length > 2 && (
+                      <Link to={`/cars/${car.id}/affiliates`}>
+                        <p className="text-sm text-accent text-center py-2">
+                          +{affiliateDealers.length - 2} more dealers
+                        </p>
+                      </Link>
+                    )}
                   </div>
                 )}
 
-                <hr className="my-6 border-border" />
-
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground mb-3">
-                    Are you a dealer? Sell this car.
-                  </p>
-                  <Link to="/dealer/signup">
-                    <Button variant="secondary" className="w-full">
-                      I Can Sell This
+                {/* Attach as Affiliate CTA */}
+                <div className="mt-4 pt-4 border-t border-border text-center">
+                  <p className="text-sm text-muted-foreground mb-2">Are you a dealer?</p>
+                  <Link to={`/cars/${car.id}/affiliates`}>
+                    <Button variant="secondary" size="sm" className="w-full">
+                      Attach as Affiliate
                     </Button>
                   </Link>
                 </div>
