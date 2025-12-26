@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,6 +13,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 type AuthStep = 'credentials' | 'otp';
 
 const DealerLogin = () => {
+  const navigate = useNavigate();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -22,9 +23,29 @@ const DealerLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  const saveAuthAndRedirect = (opts?: { token?: string; redirectTo?: string }) => {
+    const token = opts?.token ?? `demo-token-${Date.now()}`; // replace with real token from API
+    const auth = {
+      token,
+      userType: 'dealer',
+      phone,
+      loggedAt: new Date().toISOString(),
+    };
+    // store auth for other parts of the app to read
+    try {
+      localStorage.setItem('auth', JSON.stringify(auth));
+      console.log('auth stored in localStorage', auth);
+    } catch (err) {
+      console.error('failed to store auth in localStorage', err);
+    }
+    // default redirect to dealer vault (dashboard). Change to /cars for feeds or /dealers/:id for profile
+    const redirect = opts?.redirectTo ?? '/dealer/vault';
+    navigate(redirect, { replace: true });
+  };
+
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!phone || phone.length < 10) {
       toast({
         title: "Invalid phone number",
@@ -42,10 +63,17 @@ const DealerLogin = () => {
       });
       return;
     }
-    
+
     setIsLoading(true);
-    
-    // TODO: Verify credentials with Supabase
+
+    // ------------------------
+    // Replace this block with your real API/Supabase call.
+    // Example:
+    // const res = await fetch('/api/auth/dealer/login', { method: 'POST', body: JSON.stringify({ phone, password }) });
+    // const data = await res.json();
+    // if (res.ok && data.token) { saveAuthAndRedirect({ token: data.token, redirectTo: '/dealer/vault' }) }
+    // else show error toast
+    // ------------------------
     setTimeout(() => {
       setIsLoading(false);
       if (useOtp) {
@@ -59,14 +87,15 @@ const DealerLogin = () => {
           title: "Welcome back!",
           description: "You're now signed in as a dealer",
         });
-        // TODO: Navigate to dealer dashboard
+        // save a demo auth token and navigate to dealer dashboard
+        saveAuthAndRedirect({ token: `demo-token-${Date.now()}`, redirectTo: '/dealer/vault' });
       }
     }, 1500);
   };
 
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (otp.length !== 6) {
       toast({
         title: "Invalid OTP",
@@ -75,16 +104,25 @@ const DealerLogin = () => {
       });
       return;
     }
-    
+
     setIsLoading(true);
-    // TODO: Verify OTP with Supabase
+
+    // ------------------------
+    // Replace this block with your real OTP verification API call.
+    // Example:
+    // const res = await fetch('/api/auth/dealer/verify-otp', { method: 'POST', body: JSON.stringify({ phone, otp }) });
+    // const data = await res.json();
+    // if (res.ok && data.token) { saveAuthAndRedirect({ token: data.token }) }
+    // else show error toast
+    // ------------------------
     setTimeout(() => {
       setIsLoading(false);
       toast({
         title: "Welcome back!",
         description: "You're now signed in as a dealer",
       });
-      // TODO: Navigate to dealer dashboard
+      // save a demo auth token and navigate to dealer dashboard
+      saveAuthAndRedirect({ token: `demo-otp-token-${Date.now()}`, redirectTo: '/dealer/vault' });
     }, 1500);
   };
 
