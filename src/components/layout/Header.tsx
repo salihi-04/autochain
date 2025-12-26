@@ -46,15 +46,15 @@ const Header = () => {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center gap-3">
-          <Link to="/login">
+          <Link to="/buyer/auth">
             <Button variant="ghost" size="sm">
-              Login
+              Buyer Login
             </Button>
           </Link>
-          <Link to="/dealer/signup">
+          <Link to="/dealer/login">
             <Button variant="outline" size="sm">
               <User className="h-4 w-4" />
-              I'm a Dealer
+              Dealer Login
             </Button>
           </Link>
           <Link to="/cars">
@@ -98,15 +98,15 @@ const Header = () => {
                 </Link>
               ))}
               <hr className="my-2 border-border" />
-              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+              <Link to="/buyer/auth" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start">
-                  Login
+                  Buyer Login
                 </Button>
               </Link>
-              <Link to="/dealer/signup" onClick={() => setMobileMenuOpen(false)}>
+              <Link to="/dealer/login" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" className="w-full">
                   <User className="h-4 w-4" />
-                  I'm a Dealer
+                  Dealer Login
                 </Button>
               </Link>
               <Link to="/cars" onClick={() => setMobileMenuOpen(false)}>
